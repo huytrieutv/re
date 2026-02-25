@@ -1,15 +1,23 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@supabase/supabase-js"
+import { createServerClient } from "@supabase/ssr"
+import { cookies } from "next/headers"
 
 export async function GET() {
-  // dùng publishable key là đủ cho signOut ở route này
-  const supabase = createClient(
+  const cookieStore = cookies()
+  const res = NextResponse.redirect(new URL("/login", process.env.NEXT_PUBLIC_SITE_URL ?? "https://re-iyazffd13-anhnt4884-8174s-projects.vercel.app"))
+
+  const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get: (name) => cookieStore.get(name)?.value,
+        set: (name, value, options) => res.cookies.set({ name, value, ...options }),
+        remove: (name, options) => res.cookies.set({ name, value: "", ...options }),
+      },
+    }
   )
 
   await supabase.auth.signOut()
-
-  const url = new URL("/login", "http://localhost")
-  return NextResponse.redirect(url)
+  return res
 }
