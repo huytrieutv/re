@@ -91,7 +91,14 @@ export function Topbar() {
       value: Number(txForm.value) || 0,
     })
     setNewTxOpen(false)
-    setTxForm({ title: "", customerName: "", phone: "", propertyLabel: "", stage: "lead", value: "" })
+    setTxForm({
+      title: "",
+      customerName: "",
+      phone: "",
+      propertyLabel: "",
+      stage: "lead",
+      value: "",
+    })
   }
 
   return (
@@ -162,7 +169,10 @@ export function Topbar() {
                 <p className="text-sm font-semibold text-foreground">Thông báo</p>
               </div>
               {mockAlerts.map((alert) => (
-                <DropdownMenuItem key={alert.id} className="flex items-start gap-2 py-2.5 cursor-pointer">
+                <DropdownMenuItem
+                  key={alert.id}
+                  className="flex items-start gap-2 py-2.5 cursor-pointer"
+                >
                   <Badge
                     variant={alert.type === "error" ? "destructive" : "secondary"}
                     className={cn(
@@ -171,7 +181,11 @@ export function Topbar() {
                       alert.type === "info" && "bg-primary/10 text-primary"
                     )}
                   >
-                    {alert.type === "error" ? "Quá hạn" : alert.type === "warning" ? "Cảnh báo" : "Nhắc nhở"}
+                    {alert.type === "error"
+                      ? "Quá hạn"
+                      : alert.type === "warning"
+                        ? "Cảnh báo"
+                        : "Nhắc nhở"}
                   </Badge>
                   <span className="text-sm text-foreground">{alert.text}</span>
                 </DropdownMenuItem>
@@ -195,9 +209,12 @@ export function Topbar() {
                 Tài khoản
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer text-destructive">
-                <LogOut className="w-4 h-4 mr-2" />
-                Đăng xuất
+              {/* ✅ Logout thực sự: điều hướng tới /logout */}
+              <DropdownMenuItem asChild className="cursor-pointer text-destructive">
+                <Link href="/logout">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Đăng xuất
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -207,7 +224,10 @@ export function Topbar() {
       {/* Mobile slide-out menu */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="absolute inset-0 bg-foreground/50" onClick={() => setMobileMenuOpen(false)} />
+          <div
+            className="absolute inset-0 bg-foreground/50"
+            onClick={() => setMobileMenuOpen(false)}
+          />
           <div className="absolute inset-y-0 left-0 w-64 bg-sidebar text-sidebar-foreground flex flex-col animate-in slide-in-from-left duration-300">
             <div className="flex items-center justify-between h-14 px-4 border-b border-sidebar-border">
               <div className="flex items-center gap-2">
@@ -225,9 +245,11 @@ export function Topbar() {
                 <X className="w-4 h-4" />
               </Button>
             </div>
+
             <nav className="flex-1 py-3 px-2 flex flex-col gap-1">
               {mobileNavItems.map((item) => {
-                const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
+                const isActive =
+                  pathname === item.href || pathname.startsWith(item.href + "/")
                 return (
                   <Link
                     key={item.href}
@@ -245,6 +267,16 @@ export function Topbar() {
                   </Link>
                 )
               })}
+
+              {/* ✅ Logout in mobile menu */}
+              <Link
+                href="/logout"
+                className="mt-2 flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-destructive hover:bg-sidebar-accent/50"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <LogOut className="w-4 h-4 shrink-0" />
+                <span>Đăng xuất</span>
+              </Link>
             </nav>
           </div>
         </div>
@@ -271,7 +303,9 @@ export function Topbar() {
               <Input
                 id="tx-customer"
                 value={txForm.customerName}
-                onChange={(e) => setTxForm((f) => ({ ...f, customerName: e.target.value }))}
+                onChange={(e) =>
+                  setTxForm((f) => ({ ...f, customerName: e.target.value }))
+                }
                 placeholder="Tên khách hàng"
               />
             </div>
@@ -289,13 +323,20 @@ export function Topbar() {
               <Input
                 id="tx-property"
                 value={txForm.propertyLabel}
-                onChange={(e) => setTxForm((f) => ({ ...f, propertyLabel: e.target.value }))}
+                onChange={(e) =>
+                  setTxForm((f) => ({ ...f, propertyLabel: e.target.value }))
+                }
                 placeholder="VD: Vinhomes S5.03.12"
               />
             </div>
             <div className="flex flex-col gap-2">
               <Label>Giai đoạn</Label>
-              <Select value={txForm.stage} onValueChange={(v) => setTxForm((f) => ({ ...f, stage: v as StageKey }))}>
+              <Select
+                value={txForm.stage}
+                onValueChange={(v) =>
+                  setTxForm((f) => ({ ...f, stage: v as StageKey }))
+                }
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -323,7 +364,10 @@ export function Topbar() {
             <Button variant="outline" onClick={() => setNewTxOpen(false)}>
               Hủy
             </Button>
-            <Button onClick={handleCreateTx} className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button
+              onClick={handleCreateTx}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
               Tạo
             </Button>
           </DialogFooter>
